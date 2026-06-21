@@ -167,10 +167,14 @@ impl TryFrom<&[u8]> for LegacyTransaction {
         }
 
         let version = i32::from_le_bytes(
-            data[0..4].try_into().map_err(|_| BitcoinError::InvalidTransaction)?,
+            data[0..4]
+                .try_into()
+                .map_err(|_| BitcoinError::InvalidTransaction)?,
         );
         let inputs_count = u32::from_le_bytes(
-            data[4..8].try_into().map_err(|_| BitcoinError::InvalidTransaction)?,
+            data[4..8]
+                .try_into()
+                .map_err(|_| BitcoinError::InvalidTransaction)?,
         );
 
         // lock_time is the last 4 bytes of the buffer
@@ -178,7 +182,9 @@ impl TryFrom<&[u8]> for LegacyTransaction {
             return Err(BitcoinError::InvalidTransaction);
         }
         let lock_time = u32::from_le_bytes(
-            data[data.len() - 4..].try_into().map_err(|_| BitcoinError::InvalidTransaction)?,
+            data[data.len() - 4..]
+                .try_into()
+                .map_err(|_| BitcoinError::InvalidTransaction)?,
         );
 
         let inputs: Vec<TxInput> = Vec::with_capacity(inputs_count as usize);
